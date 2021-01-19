@@ -254,7 +254,6 @@ public class MgrController {
 	 * 顧客情報更新メソッド
 	 * 変更ボタンクリック時に呼び出される
 	 * @param customerId
-	 * @param mtCustomer
 	 * @param mv
 	 * @return ModelAndView
 	 */
@@ -262,15 +261,13 @@ public class MgrController {
 	@Transactional(readOnly = true)
 	public ModelAndView custumerUpd(
 			@PathVariable String customerCode,	// 顧客ID
-			@ModelAttribute MtCustomer mtCustomer,
 			ModelAndView mv) {
 		
 		// 変更対象の顧客エンティティ取得
 		MtCustomer m = customerRepository.getOne(customerCode);
-
-		// フォームビーンに顧客情報を設定
-		mtCustomer.setCustomerCode(m.getCustomerCode());
-		mtCustomer.setCustomerName(m.getCustomerName());
+		
+		// Viewに顧客情報を設定
+		mv.addObject("mtCustomer", m);
 		
 		// 顧客情報変更画面の表示を行う
 		mv.setViewName("200manager/265customerUpd");
@@ -571,15 +568,13 @@ public class MgrController {
 	@Transactional(readOnly = true)
 	public ModelAndView itemGenreUpd(
 			@PathVariable String itemGenreCode,	// 商品区分コード
-			@ModelAttribute MtItemGenre mtItemGenre,
 			ModelAndView mv) {
 		
 		// 変更対象の商品区分エンティティを取得する
 		MtItemGenre i = itemGenreRepository.getOne(itemGenreCode);
 
-		// エンティティの情報をフォームビーンに設定する
-		mtItemGenre.setItemGenreCode(i.getItemGenreCode());
-		mtItemGenre.setItemGenreName(i.getItemGenreName());
+		// エンティティの情報をViewに設定する
+		mv.addObject("mtItemGenre", i);
 		
 		// 商品区分変更画面の表示を行う
 		mv.setViewName("200manager/245itemGenreUpd");

@@ -2,6 +2,11 @@ package com.pci.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import java.util.List;
 
 
@@ -17,13 +22,19 @@ public class MtItem implements Serializable {
 
 	@Id
 	@Column(name="ITEM_CODE")
+	@Size(min=8, max=8)
 	private String itemCode;
 
 	@Column(name="ITEM_NAME")
+	@Size(min=1, max=20)
 	private String itemName;
 
+	@Min(1)
+	@Max(9999999)
+	@NotNull
 	private Integer price;
 
+	@Size(max=10)
 	private String spec;
 
 	//bi-directional many-to-one association to MtItemGenre

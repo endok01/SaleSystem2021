@@ -17,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.pci.entity.MtCustomer;
 import com.pci.entity.MtItem;
 import com.pci.entity.MtItemGenre;
-import com.pci.form.ItemGenreForm;
 import com.pci.form.ItemForm;
 import com.pci.repository.CustomerRepository;
 import com.pci.repository.ItemGenreRepository;
@@ -508,19 +507,18 @@ public class MgrController {
 	/**
 	 * 商品区分情報登録メソッド
 	 * 商品区分登録ボタンクリック時に呼び出される
-	 * @param itemGenreForm フォームビーン
+	 * @param mtItemGenre フォームビーン
 	 * @param mv
 	 * @return
 	 */
 	@RequestMapping(value = "/itemGenreCre", method = RequestMethod.POST)
 	@Transactional(readOnly = true)
 	public ModelAndView itemGenreCre(
-			@ModelAttribute ItemGenreForm itemGenreForm,
 			ModelAndView mv) {
 		
-		// Form初期化
-		itemGenreForm.setItemGenreCode(null);;
-		itemGenreForm.setItemGenreName(null);
+		// エンティティ生成と初期化
+		MtItemGenre mtItemGenre = new MtItemGenre(null, null);
+		mv.addObject("mtItemGenre", mtItemGenre);
 		
 		// 商品区分追加画面の表示を行う
 		mv.setViewName("200manager/241itemGenreCre");
@@ -532,7 +530,7 @@ public class MgrController {
 	/**
 	 * 
 	 * 商品区分情報登録確認メソッド
-	 * @param itemGenreForm
+	 * @param mtItemGenre
 	 * @param result
 	 * @param mv
 	 * @return ModelAndView
@@ -540,7 +538,7 @@ public class MgrController {
 	@RequestMapping(value = "/itemGenreCreConf", method = RequestMethod.POST)
 	@Transactional(readOnly = true)
 	public ModelAndView itemGenreCreConf(
-			@ModelAttribute @Validated ItemGenreForm itemGenreForm,
+			@ModelAttribute @Validated MtItemGenre mtItemGenre,
 			BindingResult result,
 			ModelAndView mv) {
 
@@ -548,7 +546,7 @@ public class MgrController {
 			mv.setViewName("200manager/241itemGenreCre");
 		} else {
 			// 顧客コードが重複していないかチェックする
-			if(!itemGenreRepository.existsById(itemGenreForm.getItemGenreCode())) {	
+			if(!itemGenreRepository.existsById(mtItemGenre.getItemGenreCode())) {	
 				mv.setViewName("200manager/242itemGenreCreConf");		
 			}else {
 				mv.addObject("errormessage","IDが重複しています");
@@ -565,7 +563,7 @@ public class MgrController {
 	 * 商品区分更新メソッド
 	 * 変更リンククリック時に呼び出される
 	 * @param itemGenreCode	商品区分コード
-	 * @param itemGenreForm	フォームビーン
+	 * @param mtItemGenre	フォームビーン
 	 * @param mv ModelAndView
 	 * @return ModelAndView
 	 */
@@ -573,15 +571,15 @@ public class MgrController {
 	@Transactional(readOnly = true)
 	public ModelAndView itemGenreUpd(
 			@PathVariable String itemGenreCode,	// 商品区分コード
-			@ModelAttribute ItemGenreForm itemGenreForm,
+			@ModelAttribute MtItemGenre mtItemGenre,
 			ModelAndView mv) {
 		
 		// 変更対象の商品区分エンティティを取得する
 		MtItemGenre i = itemGenreRepository.getOne(itemGenreCode);
 
 		// エンティティの情報をフォームビーンに設定する
-		itemGenreForm.setItemGenreCode(i.getItemGenreCode());
-		itemGenreForm.setItemGenreName(i.getItemGenreName());
+		mtItemGenre.setItemGenreCode(i.getItemGenreCode());
+		mtItemGenre.setItemGenreName(i.getItemGenreName());
 		
 		// 商品区分変更画面の表示を行う
 		mv.setViewName("200manager/245itemGenreUpd");
@@ -593,7 +591,7 @@ public class MgrController {
 	/**
 	 * 
 	 * 商品区分情報変更確認メソッド
-	 * @param itemGenreForm
+	 * @param mtItemGenre
 	 * @param result
 	 * @param mv
 	 * @return ModelAndView
@@ -601,7 +599,7 @@ public class MgrController {
 	@RequestMapping(value = "/itemGenreUpdConf", method = RequestMethod.POST)
 	@Transactional(readOnly = true)
 	public ModelAndView itemGenreUpdConf(
-			@ModelAttribute @Validated ItemGenreForm itemGenreForm,
+			@ModelAttribute @Validated MtItemGenre mtItemGenre,
 			BindingResult result,
 			ModelAndView mv) {
 
@@ -626,12 +624,11 @@ public class MgrController {
 	@RequestMapping(value = "/itemGenreRegExe", method = RequestMethod.POST)
 	@Transactional
 	public ModelAndView itemGenreRegExe(
-			@ModelAttribute ItemGenreForm itemGenreForm,
+			@ModelAttribute MtItemGenre mtItemGenre,
 			ModelAndView mv) {
 
 		// 商品区分情報登録
-		MtItemGenre i = new MtItemGenre(itemGenreForm.getItemGenreCode(), itemGenreForm.getItemGenreName());
-		itemGenreRepository.saveAndFlush(i);
+		itemGenreRepository.saveAndFlush(mtItemGenre);
 		
 		// 商品区分リストへリダイレクト
 		mv.setViewName("redirect:/Mgr/ItemGenreList");		

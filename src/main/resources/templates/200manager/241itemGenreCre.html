@@ -8,7 +8,7 @@
 <div class="box" id="content">
 <h3>商品区分新規登録</h3>
  	<span th:text="${errormessage}" th:class="error"></span>
- 	<form th:action="@{/Mgr/itemGenreCreConf}" th:object="${itemGenreForm}" method="post">
+ 	<form th:action="@{/Mgr/itemGenreCreConf}" th:object="${mtItemGenre}" method="post">
 	 	<table>
 	 		<tr>
 	 			<th>商品区分コード</th>
@@ -17,7 +17,7 @@
 	 		</tr>
 	 		<tr>
 	 			<th>商品区分</th>
-	 			<td><input type="text" name="itemGenreName" th:value="*{itemGenreName}" placeholder="10文字" /></td>
+	 			<td><input type="text" name="itemGenreName" th:value="*{itemGenreName}" placeholder="1～10文字" /></td>
 				<td><span th:errors="*{itemGenreName}" th:class="error"></span></td>
 	 		</tr>
 	 	</table>

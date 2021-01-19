@@ -2,6 +2,8 @@ package com.pci.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+
 import java.util.List;
 
 
@@ -17,9 +19,11 @@ public class MtItemGenre implements Serializable {
 
 	@Id
 	@Column(name="ITEM_GENRE_CODE")
+	@Size(min=8, max=8)
 	private String itemGenreCode;
 
 	@Column(name="ITEM_GENRE_NAME")
+	@Size(min=1, max=10)
 	private String itemGenreName;
 
 	//bi-directional many-to-one association to MtItem

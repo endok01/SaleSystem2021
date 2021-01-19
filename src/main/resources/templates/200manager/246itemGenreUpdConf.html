@@ -8,7 +8,7 @@
 <div class="box" id="content">
 <h3>商品区分変更確認</h3>
  	<span th:text="${errormessage}" th:class="error"></span>
- 	<form th:action="@{/Mgr/itemGenreRegExe}" th:object="${itemGenreForm}" method="post">
+ 	<form th:action="@{/Mgr/itemGenreRegExe}" th:object="${mtItemGenre}" method="post">
 	 	<input type="hidden" name="itemGenreCode" th:field="*{itemGenreCode}" />
  		<input type="hidden" name="itemGenreName" th:field="*{itemGenreName}" />
 	 	<table>

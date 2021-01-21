@@ -8,7 +8,7 @@
 <div class="box" id="content">
 <h3>商品変更</h3>
  	<span th:text="${errormessage}" th:class="error"></span>
- 	<form th:action="@{/Mgr/itemUpdConf}" th:object="${itemForm}" method="post">
+ 	<form th:action="@{/Mgr/itemUpdConf}" th:object="${mtItem}" method="post">
 		<input type="hidden" name="itemCode" th:field="*{itemCode}"/>
 	 	<table>
 	 		<tr>

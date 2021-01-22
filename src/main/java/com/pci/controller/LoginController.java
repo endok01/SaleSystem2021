@@ -31,12 +31,12 @@ public class LoginController {
 	MtUser user;
 
 	/**
-	 * /loginで起動されるメソッド
+	 * ログイン画面表示
 	 * @param mv ModelAndView
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value = "/login",method=RequestMethod.GET)
-	public ModelAndView login(ModelAndView mav) {
+	@RequestMapping(value = "/",method=RequestMethod.GET)
+	public ModelAndView topPage(ModelAndView mav) {
 		mav.addObject("iserror", false);
 		mav.setViewName("000login");
 		return mav;

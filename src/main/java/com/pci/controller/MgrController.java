@@ -17,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.pci.entity.MtCustomer;
 import com.pci.entity.MtItem;
 import com.pci.entity.MtItemGenre;
-import com.pci.form.ItemForm;
 import com.pci.repository.CustomerRepository;
 import com.pci.repository.ItemGenreRepository;
 import com.pci.repository.ItemRepository;
@@ -333,10 +332,12 @@ public class MgrController {
 	 */
 	@RequestMapping(value = "/itemCre", method = RequestMethod.POST)
 	@Transactional(readOnly = true)
-	public ModelAndView itemAdd(
-			@ModelAttribute ItemForm itemForm,
+	public ModelAndView itemCre(
 			ModelAndView mv) {
-		
+
+		// 入力用インスタンスを生成してViewに追加する
+		MtItem mtItem = new MtItem();
+		mv.addObject("mtItem", mtItem);
 		// 商品区分リストをモデルに追加する
 		List<MtItemGenre>itemGenreList = itemGenreRepository.findAllByOrderByItemGenreCode();
 		mv.addObject("itemGenreList", itemGenreList);
@@ -357,7 +358,7 @@ public class MgrController {
 	@RequestMapping(value = "/itemCreConf", method = RequestMethod.POST)
 	@Transactional(readOnly = true)
 	public ModelAndView itemCreConf(
-			@ModelAttribute @Validated ItemForm itemForm,
+			@ModelAttribute @Validated MtItem mtItem,
 			BindingResult result,
 			ModelAndView mv) {
 
@@ -369,9 +370,9 @@ public class MgrController {
 			mv.setViewName("200manager/221itemCre");
 		} else {
 			// 商品コードが重複していないかチェックする
-			if(!itemRepository.existsById(itemForm.getItemCode())) {
-				MtItemGenre g = itemGenreRepository.getOne(itemForm.getMtItemGenre().getItemGenreCode());
-				itemForm.setMtItemGenre(g);
+			if(!itemRepository.existsById(mtItem.getItemCode())) {
+				MtItemGenre g = itemGenreRepository.getOne(mtItem.getMtItemGenre().getItemGenreCode());
+				mtItem.setMtItemGenre(g);
 				mv.setViewName("200manager/222itemCreConf");		
 			}else {
 				mv.addObject("errormessage","IDが重複しています");
@@ -392,7 +393,6 @@ public class MgrController {
 	 * 商品更新メソッド
 	 * 変更ボタンクリック時に呼び出される
 	 * @param itemCode	商品コード
-	 * @param itemForm	フォームビーン
 	 * @param mv ModelAndView
 	 * @return ModelAndView
 	 */
@@ -400,18 +400,14 @@ public class MgrController {
 	@Transactional(readOnly = true)
 	public ModelAndView itemUpd(
 			@PathVariable String itemCode,	// 商品コード
-			@ModelAttribute ItemForm itemForm,
 			ModelAndView mv) {
 		
 		// 変更対象の商品区分エンティティを取得する
 		MtItem i = itemRepository.getOne(itemCode);
 
-		// エンティティの情報をフォームビーンに設定する
-		itemForm.setItemCode(i.getItemCode());
-		itemForm.setItemName(i.getItemName());
-		itemForm.setPrice(i.getPrice());
-		itemForm.setSpec(i.getSpec());
-		itemForm.setMtItemGenre(i.getMtItemGenre());
+		// Viewに商品情報を設定する
+		mv.addObject("mtItem", i);
+
 		// 商品区分リストをモデルに追加する
 		List<MtItemGenre>itemGenreList = itemGenreRepository.findAllByOrderByItemGenreCode();
 		mv.addObject("itemGenreList", itemGenreList);
@@ -433,7 +429,7 @@ public class MgrController {
 	@RequestMapping(value = "/itemUpdConf", method = RequestMethod.POST)
 	@Transactional(readOnly = true)
 	public ModelAndView itemUpdConf(
-			@ModelAttribute @Validated ItemForm itemForm,
+			@ModelAttribute @Validated MtItem mtItem,
 			BindingResult result,
 			ModelAndView mv) {
 
@@ -443,8 +439,8 @@ public class MgrController {
 			mv.addObject("itemGenreList", itemGenreList);
 			mv.setViewName("200manager/225itemUpd");
 		} else {
-			MtItemGenre g = itemGenreRepository.getOne(itemForm.getMtItemGenre().getItemGenreCode());
-			itemForm.setMtItemGenre(g);
+			MtItemGenre g = itemGenreRepository.getOne(mtItem.getMtItemGenre().getItemGenreCode());
+			mtItem.setMtItemGenre(g);
 			mv.setViewName("200manager/226itemUpdConf");		
 		}
 		
@@ -462,14 +458,12 @@ public class MgrController {
 	@RequestMapping(value = "/itemRegExe", method = RequestMethod.POST)
 	@Transactional
 	public ModelAndView itemRegExe(
-			@ModelAttribute ItemForm itemForm,
+			@ModelAttribute MtItem mtItem,
 			ModelAndView mv) {
 
-		// デバッグ
-		System.out.println(itemForm);
 		// 商品情報登録
-		MtItemGenre g = itemGenreRepository.getOne(itemForm.getMtItemGenre().getItemGenreCode());
-		MtItem i = new MtItem(itemForm.getItemCode(), itemForm.getItemName(), itemForm.getPrice(), itemForm.getSpec(), g);
+		MtItemGenre g = itemGenreRepository.getOne(mtItem.getMtItemGenre().getItemGenreCode());
+		MtItem i = new MtItem(mtItem.getItemCode(), mtItem.getItemName(), mtItem.getPrice(), mtItem.getSpec(), g);
 		itemRepository.saveAndFlush(i);
 		
 		// 商品区分リストへリダイレクト

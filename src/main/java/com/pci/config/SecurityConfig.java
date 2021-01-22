@@ -25,13 +25,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()
-				.loginPage("/login")
-				.defaultSuccessUrl("/index", true)
-				.failureUrl("/login-error")
+				.loginProcessingUrl("/login")	// /loginリクエストを受けて認証処理を行う
+				.loginPage("/")					// ログイン画面のURL
+				.defaultSuccessUrl("/index", true)	// ログイン認証成功時のURL
+				.failureUrl("/login-error")			// ログイン認証失敗時のURL
 				.permitAll()
 				.and()
 			.logout()
-				.logoutSuccessUrl("/login")
+				.logoutSuccessUrl("/")
 				.permitAll();
 	}
 	

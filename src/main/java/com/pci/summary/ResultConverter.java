@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 /**
  * 
  * 集計結果を各オブジェクトに変換するクラス
- * マネージャーロール、ユーザロールから使用されるのでComponentとして定義
  * @author endo_k01
  *
  */

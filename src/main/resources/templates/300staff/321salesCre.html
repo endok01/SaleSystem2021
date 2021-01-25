@@ -8,7 +8,7 @@
 <div class="box" id="content">
 <h3>売上登録</h3>
  	<span th:text="${errormessage}" th:class="error"></span>
-  	<form th:action="@{/Staff/salesCreConf}" th:object="${salesForm}" method="post">
+  	<form th:action="@{/Staff/salesCreConf}" th:object="${trSalesOutline}" method="post">
  		<table>
  			<tr>
 	 			<th>顧客</th>
@@ -22,8 +22,8 @@
 	 		</tr>
 	 		<tr>
 	 			<th>売上日</th>
-	 			<td><input type="date" name="salesDateString" th:field="*{salesDateString}" placeholder="必須入力"/></td>
-	 			<td><span th:errors="*{salesDateString}" th:class="error"></span></td>
+	 			<td><input type="date" name="saleDate" th:field="*{saleDate}" placeholder="必須入力"/></td>
+	 			<td><span th:errors="*{saleDate}" th:class="error"></span></td>
 	 		</tr>
  		</table>
  		<br>
@@ -34,18 +34,18 @@
 	 			<th>単価</th>
 	 			<th>数量</th>
 	 		</tr>
-	 		<tr th:each="s, status : *{salesItemForm}" class="row">
-	 			<td th:text="${s.itemName}">
+	 		<tr th:each="s, status : *{trSalesDetails}" class="row">
+	 			<td th:text="${s.mtItem.itemName}">
 	 			</td>
-	 			<td th:text="${s.spec}"></td>
-	 			<td th:text="${#numbers.formatInteger(s.price, 1, 'COMMA')}" class="c0"></td>
+	 			<td th:text="${s.mtItem.spec}"></td>
+	 			<td th:text="${#numbers.formatInteger(s.mtItem.price, 1, 'COMMA')}" class="c0"></td>
 	 			<td>
-	 				<input type="number" min="0" max="99" th:field="*{salesItemForm[__${status.index}__].quantity}" name="quantity">
-	 				<input type="hidden" th:field="*{salesItemForm[__${status.index}__].detailId}" name="detailId" />
-	 				<input type="hidden" th:field="*{salesItemForm[__${status.index}__].itemCode}" name="itemCode" />
-	 				<input type="hidden" th:field="*{salesItemForm[__${status.index}__].itemName}" name="itemName" />
-	 				<input type="hidden" th:field="*{salesItemForm[__${status.index}__].price}" name="price" />
-	 				<input type="hidden" th:field="*{salesItemForm[__${status.index}__].spec}" name="spec" />
+	 				<input type="number" min="0" max="99" th:field="*{trSalesDetails[__${status.index}__].quantity}" name="quantity">
+	 				<input type="hidden" th:field="*{trSalesDetails[__${status.index}__].detailId}" name="detailId" />
+	 				<input type="hidden" th:field="*{trSalesDetails[__${status.index}__].mtItem.itemCode}" name="itemCode" />
+	 				<input type="hidden" th:field="*{trSalesDetails[__${status.index}__].mtItem.itemName}" name="itemName" />
+	 				<input type="hidden" th:field="*{trSalesDetails[__${status.index}__].mtItem.price}" name="price" />
+	 				<input type="hidden" th:field="*{trSalesDetails[__${status.index}__].mtItem.spec}" name="spec" />
 	 			</td>
 	 		</tr>
 		</table>

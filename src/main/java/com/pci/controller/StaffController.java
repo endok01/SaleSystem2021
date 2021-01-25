@@ -164,24 +164,21 @@ public class StaffController {
 	@RequestMapping(value = "/salesCre",method = RequestMethod.POST)
 	public ModelAndView SaleCre(
 			@ModelAttribute("loginUser") MtUser loginUser,	// セッション情報から取得
-			@ModelAttribute SalesForm salesForm,
 			ModelAndView mav) {
-		salesForm.setMtUser(loginUser);
+
+		// ユーザ情報の設定
+		TrSalesOutline trSalesOutline = new TrSalesOutline();
+		trSalesOutline.setMtUser(loginUser);
 		// 商品一覧の作成
-		List<SalesItemForm> salesItemForm = new ArrayList<>();
+		List<TrSalesDetail> detailList = new ArrayList<>();
+
 		List<MtItem> itemList =  itemRepository.findAllByOrderByItemCode();
 		for(MtItem i : itemList) {
-			SalesItemForm itemForm = new SalesItemForm(
-												null, 
-												i.getItemCode(), 
-												i.getItemName(), 
-												i.getPrice(), 
-												i.getSpec(), 
-												0);
-			salesItemForm.add(itemForm);
+			TrSalesDetail trSalesDetail = new TrSalesDetail(null, 0, null, i);
+			detailList.add(trSalesDetail);
 		}
-		salesForm.setSalesItemForm(salesItemForm);
-		mav.addObject("salesForm", salesForm);
+		trSalesOutline.setTrSalesDetails(detailList);
+		mav.addObject("trSalesOutline", trSalesOutline);
 		mav.addObject("customerList", customerRepository.findAllByOrderByCustomerCode());
 		mav.setViewName("/300staff/321salesCre");
 		return mav;
@@ -198,14 +195,15 @@ public class StaffController {
 	 */
 	@RequestMapping(value="/salesCreConf", method=RequestMethod.POST)
 	public ModelAndView SaleCreConf(
-			@ModelAttribute @Validated SalesForm salesForm,
+			@ModelAttribute SalesForm salesForm,
+			@ModelAttribute @Validated TrSalesOutline trSalesOutline,
 			BindingResult result,
 			ModelAndView mav) {
 		
 		// 売上件数の算出
 		int total = 0;
-		for(SalesItemForm i : salesForm.getSalesItemForm()) {
-			total += i.getQuantity();
+		for(TrSalesDetail d : trSalesOutline.getTrSalesDetails()) {
+			total += d.getQuantity();
 		}
 		
 		if(total == 0) {	// 売上が１件も登録されていない場合はエラーにする
